@@ -5,11 +5,12 @@ title CS2
 
 :: Set variables
 set ROOT_DIR=%~dp0
-set "gameinfo=server\game\csgo\gameinfo.gi"
+set "gameinfo=%ROOT_DIR%server\game\csgo\gameinfo.gi"
 set "searchString=Game	csgo/addons/metamod"
 set "insertAfter=Game_LowViolence	csgo_lv"
 set "bakFile=%gameinfo%.bak"
 set "tempFile=%gameinfo%.tmp"
+set "custom_folder=%ROOT_DIR%custom_files"
 set "metamodCcsharpVdf=server\game\csgo\addons\metamod\counterstrikesharp.vdf"
 set "metamodCcsharpVdfWin=server\game\csgo\addons\metamod\counterstrikesharp.win.vdf"
 if not exist win.ini copy NUL win.ini
@@ -30,7 +31,7 @@ echo Using SteamCMD to check for updates.
 start /wait %ROOT_DIR%steamcmd\steamcmd.exe +force_install_dir ../server +login anonymous +app_update 730 +quit
 
 :: Ensure gameinfo.gi exists
-if not exist "%ROOT_DIR%%gameinfo%" (
+if not exist "%gameinfo%" (
     echo The file %gameinfo% does not exist.
     goto end
 )
@@ -108,7 +109,7 @@ copy /Y "%ROOT_DIR%%metamodCcsharpVdfWin%" "%ROOT_DIR%%metamodCcsharpVdf%"
 
 :: Merge your custom files in
 echo Copying custom files from "%custom_folder%".
-xcopy "%ROOT_DIR%%custom_folder%\*" "%ROOT_DIR%server\game\csgo\" /K /S /E /I /H /Y >NUL
+xcopy "%custom_folder%\*" "%ROOT_DIR%server\game\csgo\" /K /S /E /I /H /Y >NUL
 
 :: Start the server
 echo CS2 started.
