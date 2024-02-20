@@ -8,8 +8,8 @@ set ROOT_DIR=%~dp0
 set "gameinfo=server\game\csgo\gameinfo.gi"
 set "searchString=Game	csgo/addons/metamod"
 set "insertAfter=Game_LowViolence	csgo_lv"
-set "bakFile=%ROOT_DIR%%gameinfo%.bak"
-set "tempFile=%ROOT_DIR%%gameinfo%.tmp"
+set "bakFile=%gameinfo%.bak"
+set "tempFile=%gameinfo%.tmp"
 set "metamodCcsharpVdf=server\game\csgo\addons\metamod\counterstrikesharp.vdf"
 set "metamodCcsharpVdfWin=server\game\csgo\addons\metamod\counterstrikesharp.win.vdf"
 if not exist win.ini copy NUL win.ini
@@ -36,9 +36,9 @@ if not exist "%ROOT_DIR%%gameinfo%" (
 )
 
 :: Create a backup file if it doesn't exist
-if not exist "%ROOT_DIR%%bakFile%" (
+if not exist "%bakFile%" (
     echo Attempting to create backup file of %gameinfo%...
-    copy "%ROOT_DIR%%gameinfo%" "%bakFile%"
+    copy "%gameinfo%" "%bakFile%"
     if %errorlevel% neq 0 (
         echo Failed to create backup file. Error: %errorlevel%
         goto end
@@ -51,7 +51,7 @@ if not exist "%ROOT_DIR%%bakFile%" (
 
 :: Check if searchString exists in the file
 echo Checking if %gameinfo% has already been patched...
-findstr /m /c:"%searchString%" "%ROOT_DIR%%gameinfo%" >nul
+findstr /m /c:"%searchString%" "%gameinfo%" >nul
 if %errorlevel%==0 (
     echo %gameinfo% has already been patched.
     goto start
@@ -62,7 +62,7 @@ if %errorlevel%==0 (
 :: Read the file, check each line for the insertAfter substring, and insert searchString
 > "%tempFile%" (
     set "added=0"
-    for /f "tokens=* delims=" %%a in ('findstr /n "^" "%ROOT_DIR%%gameinfo%"') do (
+    for /f "tokens=* delims=" %%a in ('findstr /n "^" "%gameinfo%"') do (
         set "line=%%a"
         setlocal enabledelayedexpansion
         set "line=!line:*:=!"
@@ -86,7 +86,7 @@ if %errorlevel%==0 (
 :: Replace the original file with the modified content
 if exist "%tempFile%" (
     echo Temporary file %tempFile% created successfully. Preparing to replace %gameinfo%...
-    move /y "%tempFile%" "%ROOT_DIR%%gameinfo%"
+    move /y "%tempFile%" "%gameinfo%"
     if %errorlevel% neq 0 (
         echo Failed to replace original file. Error: %errorlevel%
         goto end
